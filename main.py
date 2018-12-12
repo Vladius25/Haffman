@@ -93,10 +93,13 @@ def make_binstring():
 
 @timing
 def encode():
-    pickle.dump(codes, f2)
-    f2.write(bytes("end_codes", "utf-8"))
-
     output = make_binstring()
+
+    f2.write(bytearray([len(output) % 8]))
+    f2.write(bytes("codes", "utf-8"))
+    pickle.dump(codes, f2)
+    f2.write(bytes("codes", "utf-8"))
+
     f2.write(bytes(int(output[i: i + 8], 2) for i in range(0, len(output), 8)))
 
 
