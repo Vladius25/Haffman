@@ -13,28 +13,31 @@ def timing(func):
 
 
 @timing
-def get_bin_string():
+def get_bin_string(data, last_len):
     str = ""
-    for byte in data:
+    for byte in data[:-1]:
         bin_num = bin(byte)[2:]
         length = len(bin_num)
-        str += "0" * (8-length) + bin_num
+        str += "0" * (8 - length) + bin_num
+    str += "0" * (8 - last_len) + bin(data[-1])[2:]
     return str
 
 
 @timing
 def extract_data():
-    global codes, data
-    codes = pickle.loads(input)
+    last_len, codes, encoded_data = input.split(bytes("codes", "utf-8"))
+
+    last_len = int.from_bytes(last_len, byteorder='big')
+    last_len = 8 if last_len == 0 else last_len
+    codes = pickle.loads(codes)
     codes = dict((v, k) for k, v in codes.items())
 
-    data = input.split(bytes("end_codes", "utf-8"))[1]
-    data = get_bin_string()
+    decoded_data = get_bin_string(encoded_data, last_len)
+    return codes, decoded_data
 
 
 @timing
-def decode():
-    global codes
+def decode(codes, data):
     output, decode_candidate = "", ""
 
     for ch in data:
@@ -44,12 +47,14 @@ def decode():
             decode_candidate = ""
         except KeyError:
             pass
-    print(output)
+    w.write(bytes(output+"\n", "latin1"))
 
 
 if __name__ == "__main__":
     r = open("input.rar", "rb")
+    w = open("output.txt", "wb")
     input = r.read()
-
-    extract_data()
-    decode()
+    codes, data = extract_data()
+    decode(codes, data)
+# 100001000010101
+    # ['11101000', '01000010', '00010101']
