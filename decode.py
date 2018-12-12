@@ -47,7 +47,7 @@ def decode(codes, data):
             decode_candidate = ""
         except KeyError:
             pass
-    w.write(bytes(output+"\n", "latin1"))
+    w.write(bytes(output + "\n", "latin1"))
 
 
 if __name__ == "__main__":
@@ -56,5 +56,3 @@ if __name__ == "__main__":
     input = r.read()
     codes, data = extract_data()
     decode(codes, data)
-# 100001000010101
-    # ['11101000', '01000010', '00010101']
