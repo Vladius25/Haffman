@@ -19,7 +19,8 @@ def get_bin_string(data, last_len):
         bin_num = bin(byte)[2:]
         length = len(bin_num)
         str += "0" * (8 - length) + bin_num
-    str += "0" * (8 - last_len) + bin(data[-1])[2:]
+    last_byte =  bin(data[-1])[2:]
+    str += "0" * (last_len - len(last_byte)) + last_byte
     return str
 
 
@@ -47,7 +48,7 @@ def decode(codes, data):
             decode_candidate = ""
         except KeyError:
             pass
-    w.write(bytes(output + "\n", "latin1"))
+    w.write(bytes(output, "latin1"))
 
 
 if __name__ == "__main__":
